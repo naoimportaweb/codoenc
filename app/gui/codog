@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cd /opt/codoencrypt/app
+pwd
+2>/dev/null 1>/dev/null python3 gui/codog.py &

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cd /opt/codoencrypt/app
+pwd
+python3 cli/codoc.py -p $1

@@ -1,0 +1,9 @@
+{
+    "id" : "1", "name" : "Documents", 
+    "servers" : [
+        {"id" : "localhost", "type" : "http", "url" : "http://localhost/", "token" : "1"}
+    ],
+    "locals" : [
+        {"id" : "1", "path" : "~/Pictures/tmp", "files" : []}
+    ]
+}
