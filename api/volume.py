@@ -13,7 +13,7 @@ class Volume:
 
     def create(self, tamanhoGB, volume_name=None):
         if volume_name == None:
-            volume_name = str(uuid.uuid4());
+            volume_name = str(uuid.uuid4())[:8];
         self.volume_name = volume_name;
         command = '/bin/bash '+ CURRENTDIR +'/bash/create_volume.sh ' + self.volume_name + ' ' + str(tamanhoGB) + ' ' + self.password(64) ;
         p = os.system('%s' % (command));

@@ -1,19 +1,10 @@
 #!/bin/bash
 
-if [ -d /opt/codoencrypt ] ; then
-    echo "Diretório já existe: /opt/codoencrypt"
-    exit 1
+if [ ! -d /opt/codoencrypt ] ; then
+    mkdir /opt/codoencrypt
 fi
 
-if [ -d /tmp/codoencrypt-main/ ] ; then
-    rm -r /tmp/codoencrypt-main/
-fi
-
-mkdir /opt/codoencrypt
-
-wget -O /tmp/codoencrypt-main.zip http://www.aied.com.br/linux/download/kfm/codoencrypt-main.zip
-unzip /tmp/codoencrypt-main.zip -d /tmp/
-cp -r /tmp/codoencrypt-main/* /opt/codoencrypt/
+cp -r ../* /opt/codoencrypt/
 
 echo "[Unit]" > /etc/systemd/system/kfm_codo.service
 echo "Description=Codoencrypt local" >> /etc/systemd/system/kfm_codo.service
