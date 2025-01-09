@@ -1,5 +1,6 @@
 {
     "ip_restriction" : "127.0.0.1",
     "token" : "1111111111111111",
-    "volume_length" : 1
+    "size" : 15,
+    "port" : 50001
 }

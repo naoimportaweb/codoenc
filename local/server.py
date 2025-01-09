@@ -15,17 +15,22 @@ from classlib.config import Config;
 from classlib.db import Db;
 
 parser = argparse.ArgumentParser(description="");
-parser.add_argument("-s", "--size", required=True, help="");
-parser.add_argument("-p", "--port", required=True, help="");
+parser.add_argument("-s", "--size", required=False, help="");
+parser.add_argument("-p", "--port", required=False, help="");
 args = parser.parse_args();
 
 volume = Volume();
 
 class Server:
     def __init__(self, port, size):
+        self.config = Config( CURRENTDIR + "/data/config.json" );
+        if port == None:
+            port = self.config.port;
+        if size == None:
+            size = self.config.size;
         self.port = int(port);
         self.size = size;
-        self.config = Config( CURRENTDIR + "/data/config.json" );
+        
         self.db = Db();
         self.volumes = [ self.createvolume() ];
     
