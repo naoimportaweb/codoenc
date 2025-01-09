@@ -11,6 +11,7 @@ class ConnectFtp(ConnectGeneric):
         self.username = "";
         self.password = "";
         self.host = "";
+        self.directory = "/htdocs/uploads/";
         self.ftp = None;
 
     def test(self):
@@ -20,13 +21,15 @@ class ConnectFtp(ConnectGeneric):
         return "FTP: " + self.host;
 
     def tojson(self):
-        return {"id" : self.id, "type" : "ftp", "password" : self.password, "username" : self.username, "host" : self.host};
+        return {"id" : self.id, "type" : "ftp", "password" : self.password, "username" : self.username, "host" : self.host, "directory" : self.directory};
 
     def fromjson(self, js):
         self.id = js["id"];
         self.username = js["username"];
         self.password = js["password"];
         self.host = js["host"];
+        if js.get("directory") != None:
+            self.directory = js["directory"];
         self.ftp = FTP(self.host, user=self.username, passwd=self.password)  # connect to host, default port
         print(self.host, self.username, self.password);
         return True;
@@ -37,7 +40,7 @@ class ConnectFtp(ConnectGeneric):
             local_filename = volume + "/" + str(uuid.uuid4());
             ftp.cwd('/')
             with open(local_filename, 'wb') as fp:
-                filename = "/htdocs/uploads/" + file.id + "/" + part["path"];
+                filename = self.directory + file.id + "/" + part["path"];
                 ftp.retrbinary(f"RETR {filename}", fp.write);
                 for i in range(100):
                     time.sleep(1); # essa bosta é assincrona, e pode dar DOS no servidor FTP. Que merda do universo.
@@ -51,8 +54,8 @@ class ConnectFtp(ConnectGeneric):
 
     def upload(self, file, path):
         try:
-            file_remote = '/htdocs/uploads/' + file.id + "/" + path[path.rfind("/") + 1:]
-            if self.__criar_diretorio__( "/htdocs/uploads/", file.id):
+            file_remote = self.directory + file.id + "/" + path[path.rfind("/") + 1:]
+            if self.__criar_diretorio__( self.directory, file.id):
                 with open(path, "rb") as file:
                     self.ftp.storbinary(f"STOR {file_remote}", file);
                     return True;

@@ -11,6 +11,7 @@ class Workspace:
         self.servers = [];
         self.locals = [];
         self.pos_save = "";
+        self.remote_backup = None;
 
     def tojson(self):
         return {"id" : self.id, "ignore" : self.ignore, "pos_save" : self.pos_save};
@@ -25,6 +26,7 @@ class Workspace:
         w = Workspace();
         w.id = js["id"];
         w.pos_save = js["pos_save"];
+        w.remote_backup = js["remote_backup"];
         if js.get("ignore") != None:
             w.ignore = js["ignore"];
         if js.get("servers") != None:

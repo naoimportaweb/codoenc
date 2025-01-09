@@ -38,6 +38,19 @@ class DialogWorkspace(QDialog):
         self.txt_part.setText( self.routine.workspace.ignore );
         CustomVLayout.widget_linha(self, self.page_info, [lbl_part, self.txt_part] );
 
+        lbl_backup = QLabel("Ignore patters:")
+        lbl_backup.setProperty("class", "normal")
+        self.txt_backup = QLineEdit()
+        self.txt_backup.setReadOnly(True);
+        self.txt_backup.setMinimumWidth(500);
+        if self.routine.workspace.remote_backup != None and self.routine.workspace.remote_backup.get("id") != None:
+            self.txt_backup.setText( self.rotulo_server( self.routine.workspace.remote_backup ) );
+        btn_backup_add = QPushButton("Edit");
+        btn_baclup_clear = QPushButton("Clear");
+        btn_backup_add.clicked.connect(self.btn_backup_add_click);
+        btn_baclup_clear.clicked.connect(self.btn_baclup_clear_click);
+        CustomVLayout.widget_linha(self, self.page_info, [lbl_backup, self.txt_backup, btn_backup_add, btn_baclup_clear] );
+
     def painel_pos_save(self):
         lbl_part = QLabel("Pos Save: (/bin/bash script)")
         lbl_part.setProperty("class", "normal")
@@ -61,24 +74,45 @@ class DialogWorkspace(QDialog):
         self.page_servers.addWidget(self.table_servers);
         self.load_servers();
 
+    def rotulo_server(self, js):
+        if js["type"] == "http":
+            return "http: " + js["url"] ;
+        elif js["type"] == "disk":
+            return "Disk: " + js["path"] ;
+        elif js["type"] == "dropbox":
+            return "Dropbox: " + js["token"][:20];
+        elif js["type"] == "ftp":
+            return "FTP: " + js["host"] ;
+        elif js["type"] == "mega":
+            return "Mega: " + js["username"] ;
+        return "?";
+    
     def load_servers(self):
         self.table_servers.setRowCount( len( self.routine.workspace.servers ) );
         for i in range(len( self.routine.workspace.servers )):
-            if self.routine.workspace.servers[i]["type"] == "http":
-                self.table_servers.setItem( i, 0, QTableWidgetItem( self.routine.workspace.servers[i]["url"] ) );
-            elif self.routine.workspace.servers[i]["type"] == "disk":
-                self.table_servers.setItem( i, 0, QTableWidgetItem( self.routine.workspace.servers[i]["path"] ) );
-            elif self.routine.workspace.servers[i]["type"] == "dropbox":
-                self.table_servers.setItem( i, 0, QTableWidgetItem( self.routine.workspace.servers[i]["token"][:20] ) );
-            elif self.routine.workspace.servers[i]["type"] == "ftp":
-                self.table_servers.setItem( i, 0, QTableWidgetItem( self.routine.workspace.servers[i]["host"] ) );
-            elif self.routine.workspace.servers[i]["type"] == "mega":
-                self.table_servers.setItem( i, 0, QTableWidgetItem( self.routine.workspace.servers[i]["username"] ) );
+            self.table_servers.setItem( i, 0, QTableWidgetItem( self.rotulo_server(self.routine.workspace.servers[i]) ) );
     
     def txt_pos_save_click(self):
         self.routine.workspace.pos_save = self.txt_pos_save.toPlainText();
         self.routine.workspacestoreconfig();
-    
+        
+    def btn_baclup_clear_click(self):
+        retorno = self.routine.workspaceremotebackupclear();
+        if retorno:
+            self.routine.workspace.remote_backup = None ;
+            self.txt_backup.setText("");
+        return;
+
+    def btn_backup_add_click(self):
+        f = DialogServer(self, self.routine, None);
+        f.exec();
+        if f.element != None:
+            retorno = self.routine.workspaceremotebackup(f.element);
+            if retorno:
+                self.routine.workspace.remote_backup =  f.element ;
+                self.txt_backup.setText( self.rotulo_server( f.element ) );
+        return;
+
     def btn_servers_add_click(self):
         f = DialogServer(self, self.routine, None);
         f.exec();

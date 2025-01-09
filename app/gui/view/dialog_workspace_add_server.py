@@ -110,6 +110,17 @@ class DialogServer(QDialog):
         if self.element != None and self.element.get("password") != None:
             self.txt_password_ftp.setText( self.element["password"] );
         CustomVLayout.widget_linha(self, layout, [lbl_password, self.txt_password_ftp] );
+        #-------------
+        lbl_directory_ftp = QLabel("Directory:")
+        lbl_directory_ftp.setProperty("class", "normal")
+        self.txt_directory_ftp = QLineEdit()
+        self.txt_directory_ftp.setMinimumWidth(500);
+        if self.element != None and self.element.get("directory") != None:
+            self.txt_directory_ftp.setText( self.element["directory"] );
+        else:
+            self.txt_directory_ftp.setText( "/htdocs/" );
+        CustomVLayout.widget_linha(self, layout, [lbl_directory_ftp, self.txt_directory_ftp] );
+
         self.layout_principal.addLayout( "ftp", layout );
     def painel_mega(self):
         layout = QVBoxLayout();
@@ -180,6 +191,7 @@ class DialogServer(QDialog):
             self.element["host"] = self.txt_server.text();
             self.element["username"] = self.txt_username_ftp.text();
             self.element["password"] = self.txt_password_ftp.text();
+            self.element["directory"] = self.txt_directory_ftp.text();
         elif self.cmb_type.currentText() == "mega":
             if self.element == None:
                 self.element = {"type" : "mega", "id" : str(uuid.uuid4()), "password" : "", "username" : ""};

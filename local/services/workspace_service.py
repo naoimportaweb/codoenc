@@ -11,6 +11,15 @@ class WorkspaceService:
     #    js["servers"].append( { "id" : "1", "type" : "http", "token" : "1111111111111111"} );
     #    return db.append( js );
     
+    def workspaceremotebackup(self, data, db, volume, connection, address ):
+        w = db.get("workspace", data["id"]);
+        return w.remotebackup(data["server"]);
+
+    def workspaceremotebackupclear(self, data, db, volume, connection, address ):
+        w = db.get("workspace", data["id"]);
+        w.remote_backup = None;
+        return True;
+
     def storeconfig(self, data, db, volume, connection, address ):
         w = db.get("workspace", data["id"]);
         w.ignore = data["ignore"];

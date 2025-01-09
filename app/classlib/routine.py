@@ -41,6 +41,20 @@ class Routine:
         retorno = socket.send("services.workspace", "Workspace", "listworkspace", { "id" : self.id });
         retorno = retorno["return"];
         return retorno;
+    
+    def workspaceremotebackup(self, server):
+        socket = LocalConnect(port=self.port);
+        socket.open();
+        retorno = socket.send("services.workspace", "Workspace", "workspaceremotebackup", { "id" : self.id, "server" : server });
+        retorno = retorno["return"];
+        return retorno;
+
+    def workspaceremotebackupclear(self):
+        socket = LocalConnect(port=self.port);
+        socket.open();
+        retorno = socket.send("services.workspace", "Workspace", "workspaceremotebackupclear", { "id" : self.id });
+        retorno = retorno["return"];
+        return retorno;
 
     def addserver(self, server):
         socket = LocalConnect(port=self.port);

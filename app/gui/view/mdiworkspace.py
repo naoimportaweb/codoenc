@@ -230,7 +230,6 @@ class MdiWorkspace(QWidget):
         f = DialogNewLocal(self.parent, self, self.routine);
         f.exec();
         self.load();
-        self.save();
 
     def btn_refresh_local_click(self):
         self.load();                                                                                # Atualiza a TreeView
@@ -238,13 +237,11 @@ class MdiWorkspace(QWidget):
     def btn_export_local_click(self):
         print(self.routine.exportlocal( self.routine.workspace.locals[ self.local_selected_index  ].id ));      # 1 - Exporta os arquivos do diretórios
         self.load();                                                                                # 2 - Recarrega a Tree View
-        self.save();
 
     def btn_import_local_click(self):
         print("Index: ", self.local_selected_index );
         print(self.routine.importlocal( self.routine.workspace.locals[ self.local_selected_index  ].id ));      # 1 - Importa os arquivos do diretórios
         self.load();                                                                                            # 2 - Recarrega a Tree View
-        self.save();
 
     def closeworkspace(self):
         buffer = self.alterado();
@@ -264,7 +261,7 @@ class MdiWorkspace(QWidget):
             ret = qm.question(self,'', "Existem arquivos alterados, deseja realmente fazer o download?", QMessageBox.Yes | QMessageBox.No)
             if ret == QMessageBox.No:
                 return;
-        self.save();
+        #self.save();
         print(self.routine.importworkspace());
     
     def closeEvent(self, event):

@@ -1,5 +1,5 @@
 import uuid, sys, os, json, subprocess, requests, uuid, hashlib, datetime, traceback;
-import ssl;
+import ssl, datetime, shutil;
 
 sys.path.append( os.environ["ROOT"] );
 sys.path.append( os.path.dirname(os.environ["ROOT"]) );
@@ -30,6 +30,14 @@ class Workspace(Base):
         self.password = passowrd;
         self.remote_backup = None;
         self.pos_save = "";
+
+    def remotebackup(self, server_js):
+        server = ConnectUtils.fromjson(server_js);
+        if server.test():
+            if self.remote_backup == None or self.remote_backup.id != server.id:
+                self.remote_backup = server;
+            return True;
+        return False;
 
     def appendserver(self, server_js):
         for server in self.servers:
@@ -128,8 +136,10 @@ class Workspace(Base):
                 with open(path_script, 'w') as s:
                     s.write( self.pos_save.replace("~/", os.path.join("/home", os.environ["SUDO_USER"] + "/") ) );
                 os.system( "sudo -u "+ os.environ["SUDO_USER"] + " /bin/bash " +  path_script );
-            #if self.remote_backup != None:
-            #    self.remote_backup.upload( self, self.path_file );
+            if self.remote_backup != None:
+                path_backup_buffer = os.path.join(volume, datetime.now().isoformat().replace(":", "-").replace(".", "-"));
+                shutil.copy2( self.path_file , path_backup_buffer);
+                self.remote_backup.upload( self, path_backup_buffer );
         return {"status" :  retorno};
 
     def __save__(self, password, volume, final_file_name):
@@ -140,7 +150,10 @@ class Workspace(Base):
         return os.path.exists( final_file_name ); # };
 
     def tojson(self):
-        buffer = {"id" : self.id, "locals" : [], "servers" : [], "ignore" : self.ignore, "pos_save" : self.pos_save };
+        buffer = {"id" : self.id, "locals" : [], "servers" : [], "ignore" : self.ignore, "pos_save" : self.pos_save, "remote_backup" : None };
+        
+        if self.remote_backup != None:
+            buffer["remote_backup"] = self.remote_backup.tojson();
         
         for server in self.servers:
             buffer["servers"].append( server.tojson() );
@@ -176,7 +189,7 @@ class Workspace(Base):
             if js.get("pos_save") != None:
                 buffer.pos_save = js["pos_save"];
             if js.get("remote_backup") != None:
-                buffer.remote_backup = js["remote_backup"];
+                buffer.remotebackup( js["remote_backup"] );
             for local in js['locals']:
                 buffer_local = Local( local["path"], buffer, id=local["id"] );
                 for file in local["files"]:
@@ -204,6 +217,7 @@ class Workspace(Base):
                 buffer.locals.append( buffer_local );
             for server in js['servers']:
                 buffer.appendserver(server);
+
             return buffer;
         except Exception as e:
             traceback.print_exc();
