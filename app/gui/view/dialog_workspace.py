@@ -21,11 +21,13 @@ class DialogWorkspace(QDialog):
         self.widget = widget;
         self.tab = QTabWidget();  
         self.page_info = CustomVLayout.widget_tab(    self.tab, "Information");
+        self.page_pos_save = CustomVLayout.widget_tab(self.tab, "Pos Save");
         self.page_servers = CustomVLayout.widget_tab( self.tab, "Servers");
         layout = QVBoxLayout();
         layout.addWidget( self.tab );
         self.setLayout(   layout   );
         self.painel_info();
+        self.painel_pos_save();
         self.painel_servers();
 
     def painel_info(self):
@@ -35,6 +37,16 @@ class DialogWorkspace(QDialog):
         self.txt_part.setMinimumWidth(500);
         self.txt_part.setText( self.routine.workspace.ignore );
         CustomVLayout.widget_linha(self, self.page_info, [lbl_part, self.txt_part] );
+
+    def painel_pos_save(self):
+        lbl_part = QLabel("Pos Save: (/bin/bash script)")
+        lbl_part.setProperty("class", "normal")
+        self.txt_pos_save = QTextEdit()
+        self.txt_pos_save.setMinimumWidth(500);
+        self.txt_pos_save.setPlainText( self.routine.workspace.pos_save );
+        self.txt_pos_save.textChanged.connect(self.txt_pos_save_click)
+        CustomVLayout.widget_linha(self, self.page_pos_save, [lbl_part] );
+        CustomVLayout.widget_linha(self, self.page_pos_save, [self.txt_pos_save] );
     
     def painel_servers(self):
         lbl_part = QLabel("Servers")
@@ -63,10 +75,14 @@ class DialogWorkspace(QDialog):
             elif self.routine.workspace.servers[i]["type"] == "mega":
                 self.table_servers.setItem( i, 0, QTableWidgetItem( self.routine.workspace.servers[i]["username"] ) );
     
+    def txt_pos_save_click(self):
+        self.routine.workspace.pos_save = self.txt_pos_save.toPlainText();
+        self.routine.workspacestoreconfig();
+    
     def btn_servers_add_click(self):
         f = DialogServer(self, self.routine, None);
         f.exec();
-        if f != None:
+        if f.element != None:
             retorno = self.routine.addserver(f.element);
             if retorno:
                 self.routine.workspace.servers.append( f.element );

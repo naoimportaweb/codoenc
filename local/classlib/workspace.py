@@ -17,7 +17,7 @@ from classlib.connect_utils import ConnectUtils;
 import certifi
 
 class Workspace(Base):
-    def __init__(self, path_file, id=None):
+    def __init__(self, path_file, passowrd, id=None):
         self.config = Config( os.environ["ROOT"] + "/data/config.json" );
         self.id = str(Workspace.tick());
         if id != None:
@@ -26,6 +26,10 @@ class Workspace(Base):
         self.servers = [];
         self.ignore = "";
         self.path_file = path_file;
+        self.path_backup = os.path.join( path_file[:path_file.rfind("/")], "~" + path_file[path_file.rfind("/") + 1:]);
+        self.password = passowrd;
+        self.remote_backup = None;
+        self.pos_save = "";
 
     def appendserver(self, server_js):
         for server in self.servers:
@@ -95,6 +99,7 @@ class Workspace(Base):
                 return local; 
         l = Local(path, self);
         self.locals.append(l);
+        #self.backup(self.password, volume );
         return l;
 
     def importworkspace(self, volume):
@@ -107,17 +112,35 @@ class Workspace(Base):
         for local in self.locals:
             if os.path.exists( local.getAbsPath() ):
                 lista_local = local.exportlocal( volume, self.servers );
+        self.backup(self.password, volume );
         return {"status" : True};
 
+    def backup(self, password, volume):
+        return {"status" : self.__save__(password, volume, self.path_backup) };
+    
     def save(self, password, volume):
+        retorno = self.__save__(password, volume, self.path_file );
+        if retorno:
+            if os.path.exists( self.path_backup ):
+                os.unlink( self.path_backup );
+            if self.pos_save.strip() != "":
+                path_script = volume + "/" + str(uuid.uuid4());
+                with open(path_script, 'w') as s:
+                    s.write( self.pos_save.replace("~/", os.path.join("/home", os.environ["SUDO_USER"] + "/") ) );
+                os.system( "sudo -u "+ os.environ["SUDO_USER"] + " /bin/bash " +  path_script );
+            #if self.remote_backup != None:
+            #    self.remote_backup.upload( self, self.path_file );
+        return {"status" :  retorno};
+
+    def __save__(self, password, volume, final_file_name):
         path_fake = volume + "/" + str(uuid.uuid4());
         with open( path_fake, "w") as f:
             f.write( json.dumps( self.tojson() ) );
-        FileHelp.encrypt_file( password.encode(), hashlib.md5(password.encode()).hexdigest()[:16].encode(), path_fake, self.path_file);
-        return {"status" : os.path.exists( self.path_file )};
+        FileHelp.encrypt_file( password.encode(), hashlib.md5(password.encode()).hexdigest()[:16].encode(), path_fake, final_file_name);
+        return os.path.exists( final_file_name ); # };
 
     def tojson(self):
-        buffer = {"id" : self.id, "locals" : [], "servers" : [], "ignore" : self.ignore};
+        buffer = {"id" : self.id, "locals" : [], "servers" : [], "ignore" : self.ignore, "pos_save" : self.pos_save };
         
         for server in self.servers:
             buffer["servers"].append( server.tojson() );
@@ -144,13 +167,16 @@ class Workspace(Base):
         try:
             FileHelp.decrypt_file( password.encode(), hashlib.md5(password.encode()).hexdigest()[:16].encode(), path_file, path_fake);
             print("Descriptografado com sucesso.");
-            buffer = Workspace(path_file);
-            
+            buffer = Workspace(path_file, password);
             js = json.loads( open(path_fake, 'r').read() );
             
             buffer.id = js['id'];
             if js.get("ignore") != None:
                 buffer.ignore = js["ignore"];
+            if js.get("pos_save") != None:
+                buffer.pos_save = js["pos_save"];
+            if js.get("remote_backup") != None:
+                buffer.remote_backup = js["remote_backup"];
             for local in js['locals']:
                 buffer_local = Local( local["path"], buffer, id=local["id"] );
                 for file in local["files"]:

@@ -10,7 +10,11 @@ class Workspace:
         self.ignore = "";
         self.servers = [];
         self.locals = [];
+        self.pos_save = "";
 
+    def tojson(self):
+        return {"id" : self.id, "ignore" : self.ignore, "pos_save" : self.pos_save};
+    
     def appendlocal(self, local):
         if len([obj for obj in self.locals if obj.path == local.path]) == 0:  #https://www.geeksforgeeks.org/python-json-data-filtering/
             self.locals.append(local);
@@ -20,6 +24,7 @@ class Workspace:
     def fromjson(js):
         w = Workspace();
         w.id = js["id"];
+        w.pos_save = js["pos_save"];
         if js.get("ignore") != None:
             w.ignore = js["ignore"];
         if js.get("servers") != None:

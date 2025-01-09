@@ -11,6 +11,12 @@ class WorkspaceService:
     #    js["servers"].append( { "id" : "1", "type" : "http", "token" : "1111111111111111"} );
     #    return db.append( js );
     
+    def storeconfig(self, data, db, volume, connection, address ):
+        w = db.get("workspace", data["id"]);
+        w.ignore = data["ignore"];
+        w.pos_save = data["pos_save"];
+        return True;
+    
     def addserver(self, data, db, volume, connection, address ):
         w = db.get("workspace", data["id"]);
         buffer = w.appendserver(data["server"]);
@@ -40,7 +46,8 @@ class WorkspaceService:
     
     def createworkspace(self, data, db, volume, connection, address ):
         #"path" : , "id" : , "url" , "token" 
-        w = Workspace(data["path"], id=data["id"]);
+        data["password"] = data["password"] + hashlib.md5(data["password"].encode()).hexdigest();
+        w = Workspace(data["path"], data["password"], id=data["id"]); 
         if data["url"] != "":
             w.appendserver( {"id" : w.id, "type" : "http", "url" : data["url"], "token" : data["token"]} );
         db.append( "workspace", w.id, w, replace=True );

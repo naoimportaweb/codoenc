@@ -5,6 +5,7 @@ if [ ! -d /opt/codoencrypt ] ; then
 fi
 
 cp -r ../* /opt/codoencrypt/
+chmod +x /opt/codoencrypt/local/start.sh
 
 sudo apt install cryptsetup -y
 

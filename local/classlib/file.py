@@ -95,7 +95,6 @@ class File(Base):
                 if part_localizado == None:
                     sumario[0] += 1;
                     server = servers[ random.randint(0, len(servers) - 1)  ];
-                    print(server);
                     if not self.__upload_generic__(path, server):
                         return None;
                     else:

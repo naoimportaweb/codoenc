@@ -84,6 +84,13 @@ class Routine:
         retorno = retorno["return"];
         return retorno;
 
+    def workspacestoreconfig(self):
+        socket = LocalConnect(port=self.port);
+        socket.open();
+        retorno = socket.send("services.workspace", "Workspace", "storeconfig", self.workspace.tojson() );
+        retorno = retorno["return"];
+        return retorno;
+
     def appendlocal(self, path):
         socket = LocalConnect(port=self.port);
         socket.open();
@@ -109,7 +116,7 @@ class Routine:
         #buffer = Routine(port, "/home/" + os.environ["USER"] + "/" + id + ".json", password1, id=id);
         socket = LocalConnect(port=port);
         socket.open();
-        retorno = socket.send("services.workspace", "Workspace", "createworkspace", { "path" : buffer.workspace_path, "id" : id, "url" : url, "token" : token});
+        retorno = socket.send("services.workspace", "Workspace", "createworkspace", { "path" : buffer.workspace_path, "id" : id, "url" : url, "token" : token, "password" : password1});
         retorno = retorno["return"];
         print(retorno);
         buffer.id = retorno["id"];
