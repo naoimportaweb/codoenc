@@ -197,4 +197,3 @@ class DialogServer(QDialog):
                 self.element = {"type" : "mega", "id" : str(uuid.uuid4()), "password" : "", "username" : ""};
             self.element["username"] = self.txt_username_mega.text();
             self.element["password"] = self.txt_password_mega.text();
-        print(self.element);

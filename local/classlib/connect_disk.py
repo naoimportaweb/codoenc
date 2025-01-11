@@ -9,6 +9,9 @@ class ConnectDisk(ConnectGeneric):
     def __init__(self):
         self.path = None;
 
+    def start(self):
+        return True;
+
     def test(self):
         return os.path.exists( self.path );
 
@@ -35,9 +38,6 @@ class ConnectDisk(ConnectGeneric):
 
     def upload(self, file, path):
         try:
-            #with open(path, "rb") as f:
-            #    data = f.read()
-            #    self.dbx.files_upload(data, f"/"+ file.id +"/" + path[path.rfind("/") + 1:] , mode=dropbox.files.WriteMode("overwrite"));
             dir_buffer = os.path.join( self.path, file.id );
             if not os.path.exists( dir_buffer ):
                 os.makedirs( dir_buffer );

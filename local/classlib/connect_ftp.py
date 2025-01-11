@@ -14,6 +14,16 @@ class ConnectFtp(ConnectGeneric):
         self.directory = "/htdocs/uploads/";
         self.ftp = None;
 
+    def start(self):
+        try:
+            if self.ftp == None:
+                self.ftp = FTP(self.host, user=self.username, passwd=self.password)  # connect to host, default port
+            return True;
+        except:
+            traceback.print_exc();
+            self.ftp = None;
+        return False;
+
     def test(self):
         return True;
 
@@ -30,12 +40,13 @@ class ConnectFtp(ConnectGeneric):
         self.host = js["host"];
         if js.get("directory") != None:
             self.directory = js["directory"];
-        self.ftp = FTP(self.host, user=self.username, passwd=self.password)  # connect to host, default port
-        print(self.host, self.username, self.password);
         return True;
 
     def download(self, file, part, volume):
         try:
+            #TODO:  TIVE QUE CRIAR UM NOVO FTP OBJECT POIS QUANDO SE UTILIZA
+            # MULTI-THREADING PARA FAZER DOWNLOAD O COMPONENTE CAGA NOS PATHS /CAMINHOS/
+            # TENHO QUE ENCOTNRAR NO FUTURO UMA SOLUÇAO MELHOR.
             ftp = FTP(self.host, user=self.username, passwd=self.password)
             local_filename = volume + "/" + str(uuid.uuid4());
             ftp.cwd('/')
@@ -54,11 +65,12 @@ class ConnectFtp(ConnectGeneric):
 
     def upload(self, file, path):
         try:
-            file_remote = self.directory + file.id + "/" + path[path.rfind("/") + 1:]
-            if self.__criar_diretorio__( self.directory, file.id):
-                with open(path, "rb") as file:
-                    self.ftp.storbinary(f"STOR {file_remote}", file);
-                    return True;
+            if self.start():
+                file_remote = self.directory + file.id + "/" + path[path.rfind("/") + 1:]
+                if self.__criar_diretorio__( self.directory, file.id):
+                    with open(path, "rb") as file:
+                        self.ftp.storbinary(f"STOR {file_remote}", file);
+                        return True;
         except:
             traceback.print_exc();
             raise;

@@ -38,7 +38,7 @@ class DialogWorkspace(QDialog):
         self.txt_part.setText( self.routine.workspace.ignore );
         CustomVLayout.widget_linha(self, self.page_info, [lbl_part, self.txt_part] );
 
-        lbl_backup = QLabel("Ignore patters:")
+        lbl_backup = QLabel("Remote Backup:")
         lbl_backup.setProperty("class", "normal")
         self.txt_backup = QLineEdit()
         self.txt_backup.setReadOnly(True);

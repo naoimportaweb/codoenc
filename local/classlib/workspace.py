@@ -1,5 +1,5 @@
 import uuid, sys, os, json, subprocess, requests, uuid, hashlib, datetime, traceback;
-import ssl, datetime, shutil;
+import ssl, datetime, shutil, threading;
 
 sys.path.append( os.environ["ROOT"] );
 sys.path.append( os.path.dirname(os.environ["ROOT"]) );
@@ -139,7 +139,9 @@ class Workspace(Base):
             if self.remote_backup != None:
                 path_backup_buffer = os.path.join(volume, datetime.now().isoformat().replace(":", "-").replace(".", "-"));
                 shutil.copy2( self.path_file , path_backup_buffer);
-                self.remote_backup.upload( self, path_backup_buffer );
+                #self.remote_backup.upload( self, path_backup_buffer );
+                t = threading.Thread(target=self.remote_backup.upload, args=(self, path_backup_buffer, ));
+                t.start();
         return {"status" :  retorno};
 
     def __save__(self, password, volume, final_file_name):

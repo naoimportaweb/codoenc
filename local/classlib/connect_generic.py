@@ -8,6 +8,9 @@ class ConnectGeneric():
     def __init__(self):
         self.id = None;
     
+    def start(self):
+        return False;
+    
     def test(self):
         return False;
 
