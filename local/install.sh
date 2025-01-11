@@ -19,7 +19,13 @@ fi
 cp -r ../* ${DIR}
 chmod +x ${DIR}local/start.sh
 
-sudo apt install cryptsetup -y
+apt update -y
+apt install cryptsetup -y
+apt install python3-pip -y
+
+pip3 install dropbox
+pip3 install mega.py
+pip3 install tenacity==8.5.0
 
 echo "[Unit]" > /etc/systemd/system/kfm_codo.service
 echo "Description=Codoencrypt" >> /etc/systemd/system/kfm_codo.service

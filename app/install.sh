@@ -18,5 +18,6 @@ fi
 pip3 install requests
 pip3 install PySide6
 pip3 install pycryptodome
+pip3 install colorama
 
 ln -s /opt/codoencrypt/app/gui/codog /bin/codog
