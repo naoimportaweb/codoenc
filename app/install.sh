@@ -33,6 +33,7 @@ chmod +xr /opt/codoencrypt/app/gui/view
 chmod +xr /opt/codoencrypt/app/gui/view/ui
 chmod +xr /opt/codoencrypt/api
 chmod +xr /opt/codoencrypt/app/api
+chmod +xr /opt/codoencrypt/app/classlib
 chmod +xr /opt/codoencrypt/app/gui/codog
 chmod +r /opt/codoencrypt/app/gui/codog.py
 
