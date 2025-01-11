@@ -5,6 +5,8 @@ if [ "$EUID" -ne 0 ]; then
     exit
 fi
 
+DIR=/opt/codoencrypt/
+
 if [ -L ${DIR} ] ; then
     echo "O diretório ${DIR} nao pode ser usado pois é um link simbólico."
     exit 0

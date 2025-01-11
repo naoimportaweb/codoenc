@@ -23,14 +23,23 @@ chmod +x ${DIR}app
 chmod +x ${DIR}app/gui
 chmod +x ${DIR}app/gui/codog
 
+echo "-----------------<APT>-----------------"
 apt update -y
 apt install cryptsetup -y
 apt install python3-pip -y
+echo "-----------------<PIP>-----------------"
+# para DEBIAN precisa do --break-system-packages para os outros OSs não
+if [ ! -f /etc/pip.conf ] ; then
+    touch /etc/pip.conf
+    echo '[global]' > /etc/pip.conf
+    echo 'break-system-packages = true' >> /etc/pip.conf
+fi
 
 pip3 install dropbox
 pip3 install mega.py
 pip3 install tenacity==8.5.0
 
+echo "-----------------<SYSTEMCTL>-----------------"
 echo "[Unit]" > /etc/systemd/system/kfm_codo.service
 echo "Description=Codoencrypt" >> /etc/systemd/system/kfm_codo.service
 echo "[Service]" >> /etc/systemd/system/kfm_codo.service
