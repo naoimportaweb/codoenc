@@ -18,6 +18,10 @@ fi
 
 cp -r ../* ${DIR}
 chmod +x ${DIR}local/start.sh
+chmod +x ${DIR}app/install.sh
+chmod +x ${DIR}app
+chmod +x ${DIR}app/gui
+chmod +x ${DIR}app/gui/codog
 
 apt update -y
 apt install cryptsetup -y
@@ -38,4 +42,3 @@ echo "WantedBy=multi-user.target" >> /etc/systemd/system/kfm_codo.service
 systemctl daemon-reload
 systemctl enable kfm_codo.service
 systemctl start kfm_codo.service
-
