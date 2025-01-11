@@ -27,16 +27,13 @@ pip3 install PySide6
 pip3 install pycryptodome
 pip3 install colorama
 
-chmod +x /opt/codoencrypt/app
-chmod +x /opt/codoencrypt/app/gui
-chmod +x /opt/codoencrypt/app/gui/view
-chmod +r /opt/codoencrypt/app
-chmod +r /opt/codoencrypt/app/gui
-chmod +r /opt/codoencrypt/app/gui/view
-chmod +r /opt/codoencrypt/api
-chmod +x /opt/codoencrypt/api
-chmod +r /opt/codoencrypt/app/gui/codog
-chmod +x /opt/codoencrypt/app/gui/codog
+chmod +xr /opt/codoencrypt/app
+chmod +xr /opt/codoencrypt/app/gui
+chmod +xr /opt/codoencrypt/app/gui/view
+chmod +xr /opt/codoencrypt/app/gui/view/ui
+chmod +xr /opt/codoencrypt/api
+chmod +xr /opt/codoencrypt/app/api
+chmod +xr /opt/codoencrypt/app/gui/codog
 chmod +r /opt/codoencrypt/app/gui/codog.py
 
 ln -s /opt/codoencrypt/app/gui/codog /bin/codog
