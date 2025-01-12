@@ -18,22 +18,22 @@ class Routine:
         if id != None:
             self.id = str(id);
 
-    def listfiles(self):
-        socket = LocalConnect(port=self.port);
-        socket.open();
-        retorno = socket.send("services.workspace", "Workspace", "listfiles", { "id" : self.id });
-        retorno = retorno["return"];
-        i = 0;
-        for local in retorno:
-            print("[+] -", local["path"] );
-            j = 0;
-            for file in local["files"]:
-                print("  |--->", str(i) + "." + str(j) + "\t", file["path"], str( len(file["versions"]) )  );
-                j = j + 1;
-            i = i + 1;
-            print("_________________________________________________________");
-            print();
-        return retorno;
+    #def listfiles(self):
+    #    socket = LocalConnect(port=self.port);
+    #    socket.open();
+    #    retorno = socket.send("services.workspace", "Workspace", "listfiles", { "id" : self.id });
+    #    retorno = retorno["return"];
+    #    i = 0;
+    #    for local in retorno:
+    #        print("[+] -", local["path"] );
+    #        j = 0;
+    #        for file in local["files"]:
+    #            print("  |--->", str(i) + "." + str(j) + "\t", file["path"], str( len(file["versions"]) )  );
+    #            j = j + 1;
+    #        i = i + 1;
+    #        print("_________________________________________________________");
+    #        print();
+    #    return retorno;
 
     def listworkspace(self):
         socket = LocalConnect(port=self.port);
@@ -88,6 +88,7 @@ class Routine:
         socket = LocalConnect(port=self.port);
         socket.open();
         retorno = socket.send("services.local", "Local", "list", { "workspace_id" : self.id, "local_id" : local.id});
+        
         retorno = retorno["return"];
         return retorno;
     
@@ -132,7 +133,7 @@ class Routine:
         socket.open();
         retorno = socket.send("services.workspace", "Workspace", "createworkspace", { "path" : buffer.workspace_path, "id" : id, "url" : url, "token" : token, "password" : password1});
         retorno = retorno["return"];
-        print(retorno);
+        
         buffer.id = retorno["id"];
         buffer.workspace = Workspace.fromjson( retorno );
         return buffer;

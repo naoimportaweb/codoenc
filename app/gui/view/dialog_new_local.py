@@ -45,13 +45,13 @@ class DialogNewLocal(QDialog):
         self.txt_path.setText(os.path.expanduser("~"));
 
     def btn_open_click(self):
-        self.routine.appendlocal( self.txt_path.text() );
+        remoto = self.routine.appendlocal( self.txt_path.text() );
         l = Local();
         l.path = self.txt_path.text();
         l.workspace = self.routine.workspace;
+        l.id = remoto["id"];
         self.routine.workspace.appendlocal( l );
         self.widget.load();
-        #self.routine.workspace.appendlocal( self.txt_path.text() );
         self.close();
 
     def btn_search_click(self):

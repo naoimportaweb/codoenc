@@ -54,7 +54,6 @@ class ConnectHttp(ConnectGeneric):
 
     def download(self, file, part, volume):
         if self.start():
-            print("URL: ", part["server"]["url"] + "uploads/" + file.id + "/" + part["path"]);
             r = requests.get(part["server"]["url"] + "uploads/" + file.id + "/" + part["path"], stream=True, verify=False, headers=self.headers);
             if r.status_code != 200:
                 print("Falha de download.", str(r.status_code) + ":", part["server"]["url"] + "uploads/" + part["path"]);

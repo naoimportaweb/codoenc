@@ -188,7 +188,7 @@ class DialogServer(QDialog):
         elif self.cmb_type.currentText() == "ftp":
             if self.element == None:
                 self.element = {"type" : "ftp", "id" : str(uuid.uuid4()), "password" : "", "username" : "", "host" : ""};
-            self.element["host"] = self.txt_server.text();
+            self.element["host"] = self.txt_server_ftp.text();
             self.element["username"] = self.txt_username_ftp.text();
             self.element["password"] = self.txt_password_ftp.text();
             self.element["directory"] = self.txt_directory_ftp.text();

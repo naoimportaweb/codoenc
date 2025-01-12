@@ -107,7 +107,6 @@ class Workspace(Base):
                 return local; 
         l = Local(path, self);
         self.locals.append(l);
-        #self.backup(self.password, volume );
         return l;
 
     def importworkspace(self, volume):
@@ -181,7 +180,6 @@ class Workspace(Base):
         path_fake = volume + "/" + str(uuid.uuid4());
         try:
             FileHelp.decrypt_file( password.encode(), hashlib.md5(password.encode()).hexdigest()[:16].encode(), path_file, path_fake);
-            print("Descriptografado com sucesso.");
             buffer = Workspace(path_file, password);
             js = json.loads( open(path_fake, 'r').read() );
             

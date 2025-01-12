@@ -106,7 +106,6 @@ class MdiWorkspace(QWidget):
             i = i + 1;
 
     def removerow(self, qparent, qindex):
-        print(qindex.index().row(), qindex.index().row() );
         self.tree.rowsRemoved( qparent.index() , qindex.index().row(), qindex.index().row());
     
     def load(self):
@@ -210,7 +209,7 @@ class MdiWorkspace(QWidget):
             self.parent.notify("Falha ao salvar o workspace.");
 
     def exportworkspace(self):
-        print(self.routine.exportworkspace());
+        self.routine.exportworkspace();
         self.load();
 
     def alterado(self): # que gambiarra da porra, quando curtir a cachaça vou melhorar!!!
@@ -235,12 +234,11 @@ class MdiWorkspace(QWidget):
         self.load();                                                                                # Atualiza a TreeView
     
     def btn_export_local_click(self):
-        print(self.routine.exportlocal( self.routine.workspace.locals[ self.local_selected_index  ].id ));      # 1 - Exporta os arquivos do diretórios
+        self.routine.exportlocal( self.routine.workspace.locals[ self.local_selected_index  ].id );      # 1 - Exporta os arquivos do diretórios
         self.load();                                                                                # 2 - Recarrega a Tree View
 
     def btn_import_local_click(self):
-        print("Index: ", self.local_selected_index );
-        print(self.routine.importlocal( self.routine.workspace.locals[ self.local_selected_index  ].id ));      # 1 - Importa os arquivos do diretórios
+        self.routine.importlocal( self.routine.workspace.locals[ self.local_selected_index  ].id );      # 1 - Importa os arquivos do diretórios
         self.load();                                                                                            # 2 - Recarrega a Tree View
 
     def closeworkspace(self):
@@ -251,7 +249,7 @@ class MdiWorkspace(QWidget):
             if ret == QMessageBox.No:
                 return;
         self.save();
-        print(self.routine.closeworkspace());
+        self.routine.closeworkspace();
         self.close();
     
     def importworkspace(self):
@@ -261,8 +259,7 @@ class MdiWorkspace(QWidget):
             ret = qm.question(self,'', "Existem arquivos alterados, deseja realmente fazer o download?", QMessageBox.Yes | QMessageBox.No)
             if ret == QMessageBox.No:
                 return;
-        #self.save();
-        print(self.routine.importworkspace());
+        self.routine.importworkspace();
     
     def closeEvent(self, event):
         alterado = self.alterado();

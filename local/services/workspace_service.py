@@ -56,7 +56,7 @@ class WorkspaceService:
     def createworkspace(self, data, db, volume, connection, address ):
         #"path" : , "id" : , "url" , "token" 
         data["password"] = data["password"] + hashlib.md5(data["password"].encode()).hexdigest();
-        w = Workspace(data["path"], data["password"], id=data["id"]); 
+        w = Workspace(data["path"], data["password"][:32], id=data["id"]); 
         if data["url"] != "":
             w.appendserver( {"id" : w.id, "type" : "http", "url" : data["url"], "token" : data["token"]} );
         db.append( "workspace", w.id, w, replace=True );

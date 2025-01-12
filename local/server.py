@@ -56,6 +56,7 @@ class Server:
             importlib.reload( module );
             class_din = getattr(module, data_js["class"] + "Service")
             object_inst = class_din();
+            #print(data_js["class"] + "Service", data_js["method"]);
             method_ = getattr(object_inst, data_js["method"]);
             retorno =  { "status" : True, "return" :  method_(data_js["parameters"], self.db, self.volumes[-1].path, connection, address) }; 
         except:
@@ -68,7 +69,6 @@ class Server:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as serversocket:
             serversocket.bind(('127.0.0.1', self.port));
             serversocket.listen(10);
-            print(('127.0.0.1', self.port));
             while True:
                 try:
                     connection, address = serversocket.accept();
