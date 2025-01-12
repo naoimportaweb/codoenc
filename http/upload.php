@@ -1,9 +1,18 @@
 
 <?php
 $uploaddir = dirname(__FILE__) . '/uploads/';
-//$uploadfile = $uploaddir . basename($_FILES['userfile']['name']);
-
+$token = $_GET["token"];
 $data = json_decode(file_get_contents('php://input'), true);
+$config = null;
+
+$filename = dirname(__FILE__) . '/data/config.json';
+$config = json_decode(file_get_contents($filename), true);
+
+if( $token != $config["token"] ) {
+    header("HTTP/1.1 500 Internal Server Error");
+    die();  
+}
+
 
 if (!file_exists( $uploaddir )) {
     mkdir( $uploaddir, 1777, true);

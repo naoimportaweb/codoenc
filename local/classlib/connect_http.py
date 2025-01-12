@@ -33,7 +33,18 @@ class ConnectHttp(ConnectGeneric):
         return "HTTP: " + self.url;
 
     def test(self):
-        return True;
+        r = None;
+        try:
+            if self.start():
+                r = self.session.get(url=self.url + "status.php?token=" + self.token, headers=self.headers)
+                retorno_json = json.loads( r.text );
+                return r.status_code == 200 and retorno_json["status"] == True;
+        except:
+            traceback.print_exc();
+            if r != None:
+                print(r.text);
+            raise;
+        return False;
 
     def fromjson(self, js):
         self.id = js["id"];
@@ -43,6 +54,7 @@ class ConnectHttp(ConnectGeneric):
 
     def download(self, file, part, volume):
         if self.start():
+            print("URL: ", part["server"]["url"] + "uploads/" + file.id + "/" + part["path"]);
             r = requests.get(part["server"]["url"] + "uploads/" + file.id + "/" + part["path"], stream=True, verify=False, headers=self.headers);
             if r.status_code != 200:
                 print("Falha de download.", str(r.status_code) + ":", part["server"]["url"] + "uploads/" + part["path"]);
@@ -60,7 +72,7 @@ class ConnectHttp(ConnectGeneric):
         try:
             if self.start():
                 files = {'userfile': open( path ,'rb')}
-                r = self.session.post(url=self.url + "upload.php?id=" + file.id, files=files, json={'name': 'filename', "token" : self.token}, headers=self.headers)
+                r = self.session.post(url=self.url + "upload.php?id=" + file.id + "&token=" + self.token, files=files, json={'name': 'filename', "token" : self.token}, headers=self.headers)
                 retorno_json = json.loads( r.text );
                 return r.status_code == 200 and retorno_json["status"] == True;
         except:

@@ -38,6 +38,7 @@ fi
 pip3 install dropbox
 pip3 install mega.py
 pip3 install tenacity==8.5.0
+pip3 install requests
 
 echo "-----------------<SYSTEMCTL>-----------------"
 echo "[Unit]" > /etc/systemd/system/kfm_codo.service
